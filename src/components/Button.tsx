@@ -1,7 +1,9 @@
-import styles from './Button.module.css';
+import { ButtonContainer } from "./Button.styles";
+import { ButtonVariant } from "./Button.styles";
+
 
 interface ButtonProps {
-    color?: 'primary' | 'secondary' | 'danger' | 'sucesss';
+    variant?: ButtonVariant;
 }
 
 /**
@@ -14,6 +16,13 @@ interface ButtonProps {
  * A depender de qual classe for visada, vai mudar a cor do fundo (porque a classe do module faz isso)
  */
 
-export function Button({ color = 'primary' }: ButtonProps) {
-    return <button className={`${styles.button} ${styles[color]}`}>Click me!</button>;
+/**
+ * Atualização Aula sobre Styled Components:
+ * Abaixo você verá retorno de um componente botão previamente estilizado que tem a propriedade variant
+ * recebendo um valor padrão de primary para uma propriedade variant (mesmo nome) desse meu componente Button.tsx
+ * O componente estilizado também tem uma configuração de tipo nele para que entenda o que é primary, secondary, danger e sucesss
+ */
+
+export function Button({ variant = 'primary' }: ButtonProps) {
+    return <ButtonContainer variant={variant}>Click me!</ButtonContainer>;
 }
