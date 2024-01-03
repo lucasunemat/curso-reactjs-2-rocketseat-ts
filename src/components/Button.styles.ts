@@ -24,13 +24,26 @@ const buttonVariants = {
  */
 export const ButtonContainer = styled.button<ButtonContainerProps>`
     width: 100px;
-    height: 50px;
+    height: 40px;
+
+    /* Dentro das props do meu ButtonContainer, além de variant o styles dá o theme, atributo do tema que posso acessar o thema atual do ThemeProvider e escolher os temas */
+    background-color: ${props => props.theme.primary};
+
+    /* definindo a cor do botao */
+    color: ${props => props.theme.white};
+
+    /* outras configurações css */
+    border-radius:4px;
+    border:0;
+    margin:8px;
+
 
     /* usamos o valor passado (variant) pelo Button.tsx para iterar e achar a cor certa no objeto buttonVariants */
-
+    /*
     ${props => {
         return css`
         background-color: ${buttonVariants[props.variant || 'primary']}
         `
     }}
+    */
 `;
