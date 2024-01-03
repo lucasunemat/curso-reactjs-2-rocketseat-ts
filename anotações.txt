@@ -1,0 +1,6 @@
+CONFIGURANDO STYLES COMPONENTS
+
+* npm i styled-components
+* npm i @types/styled-components -D
+    * isso instala as tipagens como dependencia de desenvolvimento
+    * só usa em desenvolvimento pq em produção tudo vira javascript
