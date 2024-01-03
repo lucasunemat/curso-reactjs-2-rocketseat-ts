@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 /* tipo criado para evitar repetição de código */
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'sucesss';
@@ -26,7 +26,11 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     width: 100px;
     height: 50px;
 
+    /* usamos o valor passado (variant) pelo Button.tsx para iterar e achar a cor certa no objeto buttonVariants */
+
     ${props => {
-        return 
+        return css`
+        background-color: ${buttonVariants[props.variant || 'primary']}
+        `
     }}
 `;
