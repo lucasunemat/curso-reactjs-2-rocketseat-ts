@@ -1,8 +1,8 @@
-import { ButtonContainer, ButtonVariant } from './Button.styles'
+// import { ButtonContainer, ButtonVariant } from './Button.styles'
 
-interface ButtonProps {
-  variant?: ButtonVariant
-}
+// interface ButtonProps {
+// variant?: ButtonVariant
+// }
 
 /**
  * Abaixo você pode ver que fazemos destructuring da propriedade color,
@@ -21,6 +21,6 @@ interface ButtonProps {
  * O componente estilizado também tem uma configuração de tipo nele para que entenda o que é primary, secondary, danger e sucesss
  */
 
-export function Button({ variant = 'primary' }: ButtonProps) {
-  return <ButtonContainer variant={variant}>Click me!</ButtonContainer>
-}
+// export function Button({ variant = 'primary' }: ButtonProps) {
+//  return <ButtonContainer variant={variant}>Click me!</ButtonContainer>
+// }

@@ -26,3 +26,8 @@ INSTALAÇÃO E CONFIG eslint
 * dá para adicionar essa linha ao packtage.json:
     "lintScript": "eslint src --ext .ts,.tsx"
   assim você vai poder usar o node para rodar o script (npm run lintScript OU npm run lintScript --fix para ajustar os erros)
+
+PARA VOCÊ LIDAR COM ROTAS (DIFERENTES PÁGINAS) VOCÊ PRECISA DO REACT-ROUTER-DOM 
+
+* O nome da biblioteca é react router e o pacote se chama react-router-dom 
+* usaremos ele pois estamos em ambiente da web (DOM)
