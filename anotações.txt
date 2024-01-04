@@ -4,3 +4,21 @@ CONFIGURANDO STYLES COMPONENTS
 * npm i @types/styled-components -D
     * isso instala as tipagens como dependencia de desenvolvimento
     * só usa em desenvolvimento pq em produção tudo vira javascript
+
+INSTALAÇÃO E CONFIG eslint
+
+* npm i eslint -D
+* npm i @rocketseat/eslint-config -D ==> eslint configurado pela rocketseat
+* criar arquivo ".eslintrc.json" e colocar { "extends" : "@rocketseat/eslint-config/react" } dentro
+* Para configurar para salvar e corrigir tudo de eslint automaticamente, use:
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+  },
+  
+  no settings.json do vscode
+
+* comando para rodar a pasta src em busca de erros eslint nos arquivos .ts e .tsx: 
+    npx eslint src --ext .ts,.tsx 
+* usando 
+    "npx eslint src --ext .ts,.tsx --fix"
+  ele vai arrumar todos os erros encontrados

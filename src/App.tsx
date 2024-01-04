@@ -1,7 +1,7 @@
-import { ThemeProvider } from "styled-components";
-import { Button } from "./components/Button";
-import { defaultTheme } from "./styles/themes/default";
-import { GlobalStyle } from "./styles/global";
+import { ThemeProvider } from 'styled-components'
+import { Button } from './components/Button'
+import { defaultTheme } from './styles/themes/default'
+import { GlobalStyle } from './styles/global'
 
 /**
  * Aqui você coloca o ThemeProvider como tag e usa theme como
@@ -15,12 +15,11 @@ export function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
       <Button variant="primary" />
-      <Button variant="secondary"/>
+      <Button variant="secondary" />
       <Button variant="sucesss" />
       <Button variant="danger" />
 
-      <GlobalStyle /> 
+      <GlobalStyle />
     </ThemeProvider>
   )
 }
-

@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components'
 
 /* Diferente do componente button que precisa do button.styles.ts para vomitar um componente estilizado
  * O global.ts já pode vomitar um componente estilizado aqui sem precisar invocar um componente estilizado
@@ -14,12 +14,13 @@ export const GlobalStyle = createGlobalStyle`
 
     :focus {
         outline: 0;
-        box-shadow: 0 0 0; /* 0 no eixo X, 0 no eixo Y, 0 de blur */
+        box-shadow: 0 0 0 2px ${(props) =>
+          props.theme['green-500']}; /* 0 no eixo X, 0 no eixo Y, 0 de blur */
     }
 
     body {
-        background: ${props => props.theme['gray-900']};
-        color: ${props => props.theme['gray-300']};
+        background: ${(props) => props.theme['gray-900']};
+        color: ${(props) => props.theme['gray-300']};
     }
 
     body, input, textarea, button {
