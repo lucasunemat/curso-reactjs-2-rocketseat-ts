@@ -19,7 +19,10 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        background: ${(props) => props.theme['gray-900']};
+        background: ${(props) =>
+          props.theme[
+            'gray-900'
+          ]}; //lembre que theme sempre está dentro das props
         color: ${(props) => props.theme['gray-300']};
     }
 
