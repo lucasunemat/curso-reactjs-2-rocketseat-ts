@@ -22,3 +22,6 @@ INSTALAÇÃO E CONFIG eslint
 * usando 
     "npx eslint src --ext .ts,.tsx --fix"
   ele vai arrumar todos os erros encontrados
+* dá para adicionar essa linha ao packtage.json:
+    "lintScript": "eslint src --ext .ts,.tsx"
+  assim você vai poder usar o node para rodar o script (npm run lintScript OU npm run lintScript --fix para ajustar os erros)
