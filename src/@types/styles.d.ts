@@ -3,7 +3,7 @@
 import 'styled-components';
 import { defaultTheme } from '../styles/themes/default';
 
-//guardando o tipo do meu tema dentro de uma variável
+//guardando o tipo do meu tema ( com todas as suas constantes e valores possíveis lá dentro ) dentro de uma variável
 type ThemeType = typeof defaultTheme;
 
 declare module 'styled-components' {

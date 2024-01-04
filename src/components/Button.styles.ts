@@ -6,6 +6,7 @@ export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'sucesss';
 /* interface com propriedades que o meu componente estilizado irá receber e precisa entender para se comunicar com o Button.tsx */
 interface ButtonContainerProps {
     variant?: ButtonVariant;
+    //existe a propriedade theme aqui tambem
 }
 
 const buttonVariants = {
