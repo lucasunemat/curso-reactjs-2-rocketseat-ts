@@ -76,7 +76,37 @@ export const StartCountdownButton = styled.button`
     opacity: 0.7;
     cursor: not-allowed;
   }
-  &:hover {
+
+  &:not(:disabled):hover {
     background: ${(props) => props.theme['green-700']};
   }
+`
+
+// estilização básica do input
+const BaseInput = styled.input`
+  background: transparent;
+  height: 2.5rem;
+  border: 0;
+  border-bottom: 2px solid ${(props) => props.theme['gray-500']};
+  font-weight: bold;
+  font-size: 1.125rem;
+  padding: 0 0.5rem;
+
+  &::placeholder {
+    color: ${(props) => props.theme['gray-500']};
+  }
+
+  &:focus {
+    box-shadow: none; // remove a borda do input quando clicado
+    border-bottom: 2px solid ${(props) => props.theme['green-500']};
+  }
+`
+
+// aí importo o BaseInput e estilizo ele de forma diferenciada em cada componente-filho
+export const TaskInput = styled(BaseInput)`
+  flex: 1; //configura para elemento ocupar todo o espaço disponível, podendo crescer, reduzir conforme o necessário (container = width 100%)
+`
+
+export const MinutesAmountInput = styled(BaseInput)`
+  width: 4rem;
 `
