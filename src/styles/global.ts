@@ -24,6 +24,7 @@ export const GlobalStyle = createGlobalStyle`
             'gray-900'
           ]}; //lembre que theme sempre está dentro das props
         color: ${(props) => props.theme['gray-300']};
+        -webkit-font-smoothing: antialiased; //deixa as fontes mais nítidas
     }
 
     body, input, textarea, button {
