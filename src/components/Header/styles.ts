@@ -28,6 +28,11 @@ export const HeaderContainer = styled.header`
       &:hover {
         border-bottom: 3px solid ${(props) => props.theme['green-500']};
       }
+
+      //classe active o NavLink adiciona automaticamente quando o link está ativo, e podemos estilizar ela aqui
+      &.active {
+        color: ${(props) => props.theme['green-500']};
+      }
     }
   }
 `
