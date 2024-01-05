@@ -31,3 +31,7 @@ PARA VOCÊ LIDAR COM ROTAS (DIFERENTES PÁGINAS) VOCÊ PRECISA DO REACT-ROUTER-D
 
 * O nome da biblioteca é react router e o pacote se chama react-router-dom 
 * usaremos ele pois estamos em ambiente da web (DOM)
+
+PARA USAR ICONES PHOSPHOR
+
+* npm i phosphor-react

@@ -1,4 +1,9 @@
 import { HeaderContainer } from './styles'
+import logoIgnite from '../../assets/logo-ignite.svg'
+// importando ícones ( são importados como componentes ) do phosphor-react para nosso header
+import { Timer, Scroll } from 'phosphor-react'
+// NavLink é tipo um a (ancora), mas ele aponta para uma rota que você configurou path lá no Router.tsx
+import { NavLink } from 'react-router-dom'
 
 // eu estou configurando o Header, que é parte do layout padrão DefaultLayout (que também tem sua estilização própria)
 /**
@@ -13,10 +18,14 @@ import { HeaderContainer } from './styles'
 export function Header() {
   return (
     <HeaderContainer>
-      <span>logo</span>
+      <img src={logoIgnite} alt="" />
       <nav>
-        <a href="">timer</a>
-        <a href="">history</a>
+        <NavLink to="/" title="Timer">
+          <Timer size={24} />
+        </NavLink>
+        <NavLink to="/history" title="Histórico">
+          <Scroll size={24} />
+        </NavLink>
       </nav>
     </HeaderContainer>
   )
