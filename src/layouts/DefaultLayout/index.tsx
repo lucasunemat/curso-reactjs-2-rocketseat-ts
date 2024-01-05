@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { Header } from '../../components/Header'
+import { LayoutContainer } from './styles'
 
 /**
  * Layout de tela para evitar repetição de renderização de componentes
@@ -8,11 +9,15 @@ import { Header } from '../../components/Header'
  * renderizar o conteúdo único da página.
  */
 
+/*
+ * Naturalmente, tudo que você vai estilizando no styles.ts você vai importanto no seu layout padrão
+ */
+
 export function DefaultLayout() {
   return (
-    <div>
+    <LayoutContainer>
       <Header />
       <Outlet />
-    </div>
+    </LayoutContainer>
   )
 }
