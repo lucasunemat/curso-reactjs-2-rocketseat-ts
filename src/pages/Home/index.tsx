@@ -1,6 +1,12 @@
 /* sim, páginas são componentes, também */
 import { Play } from 'phosphor-react'
-import { CountdownContainer, FormContainer, HomeContainer } from './styles'
+import {
+  CountdownContainer,
+  FormContainer,
+  HomeContainer,
+  Separator,
+  StartCountdownButton,
+} from './styles'
 
 export function Home() {
   return (
@@ -18,15 +24,15 @@ export function Home() {
         <CountdownContainer>
           <span>0</span>
           <span>0</span>
-          <span>:</span>
+          <Separator>:</Separator>
           <span>0</span>
           <span>0</span>
         </CountdownContainer>
 
-        <button type="submit">
+        <StartCountdownButton disabled type="submit">
           <Play size={24} />
           Começar
-        </button>
+        </StartCountdownButton>
       </form>
     </HomeContainer>
   )
