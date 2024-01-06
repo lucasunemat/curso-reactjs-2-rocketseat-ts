@@ -100,11 +100,17 @@ const BaseInput = styled.input`
     box-shadow: none; // remove a borda do input quando clicado
     border-bottom: 2px solid ${(props) => props.theme['green-500']};
   }
+
+  color: ${(props) => props.theme['gray-100']};
 `
 
 // aí importo o BaseInput e estilizo ele de forma diferenciada em cada componente-filho
 export const TaskInput = styled(BaseInput)`
   flex: 1; //configura para elemento ocupar todo o espaço disponível, podendo crescer, reduzir conforme o necessário (container = width 100%)
+
+  &::-webkit-calendar-picker-indicator {
+    display: none !important; // remove o ícone de setinha do input que tem lista de opções
+  }
 `
 
 export const MinutesAmountInput = styled(BaseInput)`
