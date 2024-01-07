@@ -3,6 +3,7 @@ import { HistoryContainer, HistoryList } from './styles'
 export function History() {
   return (
     <HistoryContainer>
+      <h1>Meu histórico</h1>
       <HistoryList>
         <table>
           <thead>
@@ -14,6 +15,42 @@ export function History() {
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>Finalizado</td>
+            </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
