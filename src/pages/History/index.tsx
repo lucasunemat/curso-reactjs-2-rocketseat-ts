@@ -44,7 +44,15 @@ export function History() {
               <td>25 minutos</td>
               <td>Há uma hora</td>
               <td>
-                <Status statusColor="green">Concluído</Status>
+                <Status statusColor="red">Interrompido</Status>
+              </td>
+            </tr>
+            <tr>
+              <td>Projeto 1</td>
+              <td>25 minutos</td>
+              <td>Há uma hora</td>
+              <td>
+                <Status statusColor="yellow">Em andamento</Status>
               </td>
             </tr>
             <tr>
@@ -60,15 +68,7 @@ export function History() {
               <td>25 minutos</td>
               <td>Há uma hora</td>
               <td>
-                <Status statusColor="green">Concluído</Status>
-              </td>
-            </tr>
-            <tr>
-              <td>Projeto 1</td>
-              <td>25 minutos</td>
-              <td>Há uma hora</td>
-              <td>
-                <Status statusColor="green">Concluído</Status>
+                <Status statusColor="red">Interrompido</Status>
               </td>
             </tr>
           </tbody>

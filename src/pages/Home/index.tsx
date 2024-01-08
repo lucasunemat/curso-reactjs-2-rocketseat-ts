@@ -10,10 +10,25 @@ import {
   TaskInput,
 } from './styles'
 
+/**
+ * Duas formas principais de lidar com formulários no React:
+ * **Controlled**:
+ * mantenho cada input do usuário em um estado do React (foi o que fizemos no projeto de Ignite Feed)
+ * e faço isso para cada input que tem no formulário
+ * benefícios = tenho facil acesso ao valor atual do input, consigo visualizar alterações mais facilmente
+ * desvantagens = a cada modificação (setTask) o React re-renderiza o componente inteiro. Se a aplicação
+ * tiver vários componentes e muita complexidade, isso pode virar um gargalo.
+ * **Uncontrolled**:
+ */
+
 export function Home() {
+  function handleSubmit() {
+    // lógica de quando o usuário clicar no botão de começar
+  }
+
   return (
     <HomeContainer>
-      <form action="">
+      <form action="" onSubmit={handleSubmit}>
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
