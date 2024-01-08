@@ -1,4 +1,4 @@
-import { HistoryContainer, HistoryList } from './styles'
+import { HistoryContainer, HistoryList, Status } from './styles'
 
 export function History() {
   return (
@@ -19,43 +19,57 @@ export function History() {
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
             <tr>
               <td>Projeto 1</td>
               <td>25 minutos</td>
               <td>Há uma hora</td>
-              <td>Finalizado</td>
+              <td>
+                <Status statusColor="green">Concluído</Status>
+              </td>
             </tr>
           </tbody>
         </table>
