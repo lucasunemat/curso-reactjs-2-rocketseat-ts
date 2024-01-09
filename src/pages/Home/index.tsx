@@ -54,9 +54,17 @@ const newCycleFormValidationSchema = zod.object({
 
 // aqui estou criando um tipo a partir do objeto acima. É uma função do zod.
 // além disso, veja que sempre que referencio variavel JS dentro do TS, preciso colocar "typeof" + nomeDaVariavel
+// essa função infer faz o zod meio que criar um type a partir do objeto validador que eu mandei
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
+interface Cycle {
+  id: string
+  task: string
+  minutesAmount: number
+}
+
 export function Home() {
+  const [cycles, setCycles] = useState<Cycle[]>([])
   /*
    * useForm é um HOOK
    * um hook é uma função que começa com use
@@ -66,11 +74,6 @@ export function Home() {
   /**
    * handleSubmit pega a minha função de submit handleCreateNewCycle e passa as info do input para ela processar
    */
-
-  //  interface NewCycleFormData {
-  //    task: string
-  //    minutesAmount: number
-  //  }
 
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
   // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
@@ -90,7 +93,11 @@ export function Home() {
   const isSubmitDisabled = !task
 
   function handleCreateNewCycle(data: NewCycleFormData) {
-    console.log(data)
+    const newCycle: Cycle = {
+      id: new Date().getTime().toString(), // criando id a partir do tempo atual
+      task: data.task,
+      minutesAmount: data.minutesAmount,
+    }
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
