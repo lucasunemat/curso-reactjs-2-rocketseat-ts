@@ -35,3 +35,8 @@ PARA VOCÊ LIDAR COM ROTAS (DIFERENTES PÁGINAS) VOCÊ PRECISA DO REACT-ROUTER-D
 PARA USAR ICONES PHOSPHOR
 
 * npm i phosphor-react
+
+INSTALANDO REACT HOOK FORM
+
+* Usamos para manipular formulários uncontrolled e controlled
+* npm i react-hook-form

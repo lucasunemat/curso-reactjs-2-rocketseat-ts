@@ -9,7 +9,7 @@ import {
   StartCountdownButton,
   TaskInput,
 } from './styles'
-
+import { useForm } from 'react-hook-form'
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
@@ -18,13 +18,36 @@ import {
  * benefícios = tenho facil acesso ao valor atual do input, consigo visualizar alterações mais facilmente
  * desvantagens = a cada modificação (setTask) o React re-renderiza o componente inteiro. Se a aplicação
  * tiver vários componentes e muita complexidade, isso pode virar um gargalo.
+ * situações de uso => formulários pequenos, com poucos inputs
  * **Uncontrolled**:
+ * utiliza os eventos do html para manipular o formulario via onSubmit com funções (como aquelas handle)
+ * benefícios = não precisa de um estado para cada input, mais performático
+ * desvantagens = não temos acesso ao valor atual do input, não conseguimos visualizar alterações facilmente (perde fluidez)
+ * situações de uso => formulários grandes, com muitos inputs (dashboards de cadastro, com 200, 300 inputs)
+ */
+
+/**
+ * A register() é função que retorna várias funções;
+ * function register (name: string) {
+ *  return {
+ *      onChange: () => void,
+ *      onBlur: () => void,
+ *      onFocus: () => void,
+ * }
+ * Quando colocamos {...register('task')} estamos passando todas as funções como propriedades do input
+ * Ou seja, é a mesma coisa que eu colocar onChange, onBlur, onFocus manualmente e colocar uma função que faz alguma coisa
+ * (coloquei função vazia ali no exemplo mas é apenas para ilustrar)
  */
 
 export function Home() {
-  function handleSubmit() {
-    // lógica de quando o usuário clicar no botão de começar
-  }
+  /*
+   * useForm é um HOOK
+   * um hook é uma função que começa com use
+   * ela acopla uma funcionalidade ao componente
+   */
+
+  // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
+  const { register, handleSubmit } = useForm()
 
   return (
     <HomeContainer>
@@ -36,6 +59,7 @@ export function Home() {
             id="task"
             placeholder="Dê um nome ao seu projeto"
             list="task-suggestions"
+            {...register('task')} // estamos setando qual o nome do meu input (por isso, não precisa colocar mais "name" no input)
           />
 
           <datalist id="task-suggestions">
