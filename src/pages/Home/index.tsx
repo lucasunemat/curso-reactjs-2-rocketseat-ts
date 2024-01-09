@@ -12,6 +12,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
+import { useState } from 'react'
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
@@ -98,6 +99,9 @@ export function Home() {
       task: data.task,
       minutesAmount: data.minutesAmount,
     }
+
+    setCycles([...cycles, newCycle]) // adicionando novo ciclo ao array de ciclos
+
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
