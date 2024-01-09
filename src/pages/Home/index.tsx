@@ -42,6 +42,7 @@ import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com 
  */
 
 // o envio do formulario retorna um objeto, portanto começo com zod.object
+// esse é o objeto validador
 const newCycleFormValidationSchema = zod.object({
   // digo que a chave task precisa ser string com minimo 1 caractere e se nao tiver, passe essa msg par usuario
   task: zod.string().min(1, 'Informe a tarefa!'),
@@ -62,10 +63,20 @@ export function Home() {
    * handleSubmit pega a minha função de submit handleCreateNewCycle e passa as info do input para ela processar
    */
 
+  interface NewCycleFormData {
+    task: string
+    minutesAmount: number
+  }
+
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
-  const { register, handleSubmit, watch, formState } = useForm({
-    resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
-  })
+  // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
+  // Fluxo: handleSubmit -> handleCreateNewCycle -> newCycleFormValidationSchema
+  // O tempo todo useForm está sendo usado e por isso preciso que ele tenha essa interface
+  const { register, handleSubmit, watch, formState } =
+    useForm<NewCycleFormData>({
+      resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
+      defaultValues: {},
+    })
 
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
@@ -75,7 +86,7 @@ export function Home() {
   // variavel auxiliar para melhorar legibilidade do código
   const isSubmitDisabled = !task
 
-  function handleCreateNewCycle(data: unknown) {
+  function handleCreateNewCycle(data: NewCycleFormData) {
     console.log(data)
   }
 
