@@ -65,7 +65,8 @@ interface Cycle {
 }
 
 export function Home() {
-  const [cycles, setCycles] = useState<Cycle[]>([])
+  const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
+  const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo
   /*
    * useForm é um HOOK
    * um hook é uma função que começa com use
@@ -85,6 +86,9 @@ export function Home() {
     defaultValues: { task: '', minutesAmount: 0 },
   })
 
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
+  console.log(activeCycle)
+
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
   // se não tá retornando nada, então desativo o botão ( disabled = {!task} )
@@ -94,16 +98,22 @@ export function Home() {
   const isSubmitDisabled = !task
 
   function handleCreateNewCycle(data: NewCycleFormData) {
+    const id = new Date().getTime().toString()
+
     const newCycle: Cycle = {
-      id: new Date().getTime().toString(), // criando id a partir do tempo atual
+      id, // criando id a partir do tempo atual
       task: data.task,
       minutesAmount: data.minutesAmount,
     }
 
-    setCycles([...cycles, newCycle]) // adicionando novo ciclo ao array de ciclos
+    setCycles((state) => [...state, newCycle]) // adicionando novo ciclo ao array de ciclos
+
+    setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
 
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
+
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
 
   // console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando (tem que desestruturar o formState do useForm)
 
