@@ -46,12 +46,28 @@ export function Home() {
    * ela acopla uma funcionalidade ao componente
    */
 
-  // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
-  const { register, handleSubmit } = useForm()
+  /**
+   * handleSubmit pega a minha função de submit handleCreateNewCycle e passa as info do input para ela processar
+   */
 
+  // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
+  const { register, handleSubmit, watch } = useForm()
+
+  // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
+  // com ele, posso fazer ativação e desativação do botão começar, por exemplo
+  // se não tá retornando nada, então desativo o botão ( disabled = {!task} )
+  const task = watch('task')
+  // variavel auxiliar para melhorar legibilidade do código
+  const isSubmitDisabled = !task
+
+  function handleCreateNewCycle(data: unknown) {
+    console.log(data)
+  }
+
+  // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   return (
     <HomeContainer>
-      <form action="" onSubmit={handleSubmit}>
+      <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormContainer>
           <label htmlFor="task">Vou trabalhar em</label>
           <TaskInput
@@ -78,6 +94,8 @@ export function Home() {
             step={5} // step é o intervalo entre os números que o input aceita
             min={5} // valor mínimo que o input aceita
             max={60} // valor máximo que o input aceita
+            {...register('minutesAmount', { valueAsNumber: true })}
+            // aqui passamos parâmetro para indicar que esse input será um número
           />
 
           <span>minutos.</span>
@@ -90,7 +108,7 @@ export function Home() {
           <span>0</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled type="submit">
+        <StartCountdownButton disabled={isSubmitDisabled} type="submit">
           <Play size={24} />
           Começar
         </StartCountdownButton>
