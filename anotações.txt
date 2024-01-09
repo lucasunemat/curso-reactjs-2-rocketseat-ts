@@ -40,3 +40,11 @@ INSTALANDO REACT HOOK FORM
 
 * Usamos para manipular formulários uncontrolled e controlled
 * npm i react-hook-form
+
+CONFIGURAÇÃO DE BIBLIOTECA DE VALIDAÇÃO ZOD
+
+* Biblioteca de validação de formulários
+* Ela basicamente ajuda a integar com TS e validar formulários
+* npm i zod
+* npm i @hookform/resolvers = para permitir integração da react-
+  hook-form com a zod

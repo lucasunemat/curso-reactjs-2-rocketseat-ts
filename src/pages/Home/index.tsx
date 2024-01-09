@@ -10,6 +10,8 @@ import {
   TaskInput,
 } from './styles'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
