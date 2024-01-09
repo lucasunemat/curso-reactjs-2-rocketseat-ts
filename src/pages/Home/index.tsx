@@ -46,11 +46,15 @@ import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com 
 const newCycleFormValidationSchema = zod.object({
   // digo que a chave task precisa ser string com minimo 1 caractere e se nao tiver, passe essa msg par usuario
   task: zod.string().min(1, 'Informe a tarefa!'),
-  number: zod
+  minutesAmount: zod
     .number()
     .min(5, 'Ciclo precisa ser de no mínimo 5 minutos!')
     .max(60, 'Ciclo precisa ser de no máximo 60 minutos!'),
 })
+
+// aqui estou criando um tipo a partir do objeto acima. É uma função do zod.
+// além disso, veja que sempre que referencio variavel JS dentro do TS, preciso colocar "typeof" + nomeDaVariavel
+type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
   /*
@@ -63,20 +67,19 @@ export function Home() {
    * handleSubmit pega a minha função de submit handleCreateNewCycle e passa as info do input para ela processar
    */
 
-  interface NewCycleFormData {
-    task: string
-    minutesAmount: number
-  }
+  //  interface NewCycleFormData {
+  //    task: string
+  //    minutesAmount: number
+  //  }
 
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
   // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
   // Fluxo: handleSubmit -> handleCreateNewCycle -> newCycleFormValidationSchema
   // O tempo todo useForm está sendo usado e por isso preciso que ele tenha essa interface
-  const { register, handleSubmit, watch, formState } =
-    useForm<NewCycleFormData>({
-      resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
-      defaultValues: {},
-    })
+  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
+    resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
+    defaultValues: { task: '', minutesAmount: 0 },
+  })
 
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
@@ -88,9 +91,10 @@ export function Home() {
 
   function handleCreateNewCycle(data: NewCycleFormData) {
     console.log(data)
+    reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
-  console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando
+  // console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando (tem que desestruturar o formState do useForm)
 
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   return (
