@@ -41,6 +41,16 @@ import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com 
  * (coloquei função vazia ali no exemplo mas é apenas para ilustrar)
  */
 
+// o envio do formulario retorna um objeto, portanto começo com zod.object
+const newCycleFormValidationSchema = zod.object({
+  // digo que a chave task precisa ser string com minimo 1 caractere e se nao tiver, passe essa msg par usuario
+  task: zod.string().min(1, 'Informe a tarefa!'),
+  number: zod
+    .number()
+    .min(5, 'Ciclo precisa ser de no mínimo 5 minutos!')
+    .max(60, 'Ciclo precisa ser de no máximo 60 minutos!'),
+})
+
 export function Home() {
   /*
    * useForm é um HOOK
@@ -53,11 +63,14 @@ export function Home() {
    */
 
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
-  const { register, handleSubmit, watch } = useForm()
+  const { register, handleSubmit, watch, formState } = useForm({
+    resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
+  })
 
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
   // se não tá retornando nada, então desativo o botão ( disabled = {!task} )
+  // o uso de task torna o formulário controlado (controlled component)
   const task = watch('task')
   // variavel auxiliar para melhorar legibilidade do código
   const isSubmitDisabled = !task
@@ -65,6 +78,8 @@ export function Home() {
   function handleCreateNewCycle(data: unknown) {
     console.log(data)
   }
+
+  console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando
 
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   return (
@@ -95,7 +110,7 @@ export function Home() {
             placeholder="00"
             step={5} // step é o intervalo entre os números que o input aceita
             min={5} // valor mínimo que o input aceita
-            max={60} // valor máximo que o input aceita
+            // max={60} // valor máximo que o input aceita
             {...register('minutesAmount', { valueAsNumber: true })}
             // aqui passamos parâmetro para indicar que esse input será um número
           />
