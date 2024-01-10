@@ -62,12 +62,21 @@ interface Cycle {
   id: string
   task: string
   minutesAmount: number
+  startDate: Date
 }
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
   const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
+  
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
+  console.log(activeCycle)
+
+  useEffect(() => {
+    if (activeCycle)
+  }, [])
+
   /*
    * useForm é um HOOK
    * um hook é uma função que começa com use
@@ -87,9 +96,6 @@ export function Home() {
     defaultValues: { task: '', minutesAmount: 0 },
   })
 
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
-  console.log(activeCycle)
-
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
   // se não tá retornando nada, então desativo o botão ( disabled = {!task} )
@@ -105,6 +111,7 @@ export function Home() {
       id, // criando id a partir do tempo atual
       task: data.task,
       minutesAmount: data.minutesAmount,
+      startDate: new Date(),
     }
 
     setCycles((state) => [...state, newCycle]) // adicionando novo ciclo ao array de ciclos
@@ -114,7 +121,7 @@ export function Home() {
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0
+  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 // total em segundos do ciclo atual
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
 
   // Math.floor arredonda para baixo (pomodoro de 25 ao passar 1 s eu já posso exibir 24 no display)
