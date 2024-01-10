@@ -1,5 +1,5 @@
 /* sim, páginas são componentes, também */
-import { Play } from 'phosphor-react'
+import { HandPalm, Play } from 'phosphor-react'
 import {
   CountdownContainer,
   FormContainer,
@@ -7,6 +7,7 @@ import {
   MinutesAmountInput,
   Separator,
   StartCountdownButton,
+  StopCountdownButton,
   TaskInput,
 } from './styles'
 import { useForm } from 'react-hook-form'
@@ -76,13 +77,18 @@ export function Home() {
 
   // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
   useEffect(() => {
+    let interval: number
     if (activeCycle) {
-      setInterval(() => {
+      interval = setInterval(() => {
         setAmountSecondsPassed(
           differenceInSeconds(new Date(), activeCycle.startDate),
           // diferença em segundos do tempo atual para o tempo em que o ciclo começou
         )
       }, 1000)
+    }
+
+    return () => {
+      clearInterval(interval)
     }
   }, [activeCycle])
 
@@ -127,6 +133,8 @@ export function Home() {
 
     setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
 
+    setAmountSecondsPassed(0) // resetando o contador de segundos para que ele nao considere esses segundos passados em proximos ciclos
+
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
@@ -141,6 +149,12 @@ export function Home() {
   const minutes = String(minutesAmount).padStart(2, '0') // se tiver 1 minuto, exibe 01. Isso faz sempre eu ter dois caracteres. se tiver só 1 numero para exibir, preenche o começo com zero (por isso padSTART)
   const seconds = String(secondsAmount).padStart(2, '0')
   // console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando (tem que desestruturar o formState do useForm)
+
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds} - Pomodoro`
+    }
+  }, [minutes, seconds, activeCycle])
 
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   return (
@@ -186,10 +200,19 @@ export function Home() {
           <span>{seconds[1]}</span>
         </CountdownContainer>
 
-        <StartCountdownButton disabled={isSubmitDisabled} type="submit">
-          <Play size={24} />
-          Começar
-        </StartCountdownButton>
+        {activeCycle ? (
+          <StopCountdownButton
+            type="button" /* tipo button pq não quero fazer submit, só interromper mesmo */
+          >
+            <HandPalm size={24} />
+            Começar
+          </StopCountdownButton>
+        ) : (
+          <StartCountdownButton disabled={isSubmitDisabled} type="submit">
+            <Play size={24} />
+            Começar
+          </StartCountdownButton>
+        )}
       </form>
     </HomeContainer>
   )
