@@ -12,7 +12,8 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { differenceInSeconds } from 'date-fns'
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
@@ -69,13 +70,21 @@ export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
   const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
-  
+
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
   console.log(activeCycle)
 
+  // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
   useEffect(() => {
-    if (activeCycle)
-  }, [])
+    if (activeCycle) {
+      setInterval(() => {
+        setAmountSecondsPassed(
+          differenceInSeconds(new Date(), activeCycle.startDate),
+          // diferença em segundos do tempo atual para o tempo em que o ciclo começou
+        )
+      }, 1000)
+    }
+  }, [activeCycle])
 
   /*
    * useForm é um HOOK
