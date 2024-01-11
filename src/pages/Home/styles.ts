@@ -66,24 +66,29 @@ export const BaseCountdownButton = styled.button`
 
   gap: 0.5rem;
   font-weight: bold;
-
-  cursor: pointer;
-
-  background: ${(props) => props.theme['green-500']};
   color: ${(props) => props.theme['gray-100']};
+  cursor: pointer;
 
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
+`
+export const StartCountdownButton = styled(BaseCountdownButton)`
+  background: ${(props) => props.theme['green-500']};
 
   &:not(:disabled):hover {
     background: ${(props) => props.theme['green-700']};
   }
 `
-export const StartCountdownButton = styled(BaseCountdownButton)``
 
-export const StopCountdownButton = styled(BaseCountdownButton)``
+export const StopCountdownButton = styled(BaseCountdownButton)`
+  background: ${(props) => props.theme['red-500']};
+
+  &:not(:disabled):hover {
+    background: ${(props) => props.theme['red-700']};
+  }
+`
 
 // estilização básica do input
 const BaseInput = styled.input`

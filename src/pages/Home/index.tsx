@@ -65,15 +65,15 @@ interface Cycle {
   task: string
   minutesAmount: number
   startDate: Date
+  interruptedDate?: Date
 }
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
-  const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo
+  const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
-  console.log(activeCycle)
 
   // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
   useEffect(() => {
@@ -138,6 +138,26 @@ export function Home() {
     reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
   }
 
+  function handleInterruptCycle() {
+    // esse código aqui é para setar informação de ciclo interrompido
+    setCycles(
+      cycles.map((cycle) => {
+        // percorre todos os ciclos
+        if (cycle.id === activeCycleID) {
+          // se achar o ciclo atual
+          return {
+            ...cycle,
+            interruptedDate: new Date(), // retorna ele + info de interrompido (update)
+          }
+        } else {
+          return cycle // se não achar, só retorna o ciclo, não faz nada
+        }
+      }),
+    )
+
+    setActiveCycleID(null) // reseta o ciclo ativo
+  }
+
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 // total em segundos do ciclo atual
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
 
@@ -156,6 +176,8 @@ export function Home() {
     }
   }, [minutes, seconds, activeCycle])
 
+  console.log(cycles)
+
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   return (
     <HomeContainer>
@@ -167,6 +189,7 @@ export function Home() {
             id="task"
             placeholder="Dê um nome ao seu projeto"
             list="task-suggestions"
+            disabled={!!activeCycle} // se tiver ciclo ativo, desabilita o input
             {...register('task')} // estamos setando qual o nome do meu input (por isso, não precisa colocar mais "name" no input)
           />
 
@@ -186,6 +209,7 @@ export function Home() {
             step={5} // step é o intervalo entre os números que o input aceita
             min={5} // valor mínimo que o input aceita
             // max={60} // valor máximo que o input aceita
+            disabled={!!activeCycle}
             {...register('minutesAmount', { valueAsNumber: true })}
             // aqui passamos parâmetro para indicar que esse input será um número
           />
@@ -203,9 +227,10 @@ export function Home() {
         {activeCycle ? (
           <StopCountdownButton
             type="button" /* tipo button pq não quero fazer submit, só interromper mesmo */
+            onClick={handleInterruptCycle}
           >
             <HandPalm size={24} />
-            Começar
+            Interromper
           </StopCountdownButton>
         ) : (
           <StartCountdownButton disabled={isSubmitDisabled} type="submit">
