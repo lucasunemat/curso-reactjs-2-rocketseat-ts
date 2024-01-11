@@ -1,64 +1,17 @@
 /* sim, páginas são componentes, também */
 import { HandPalm, Play } from 'phosphor-react'
 import {
-  CountdownContainer,
-  FormContainer,
   HomeContainer,
-  MinutesAmountInput,
-  Separator,
   StartCountdownButton,
   StopCountdownButton,
-  TaskInput,
 } from './styles'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
 import { useState, useEffect } from 'react'
 import { differenceInSeconds } from 'date-fns'
-/**
- * Duas formas principais de lidar com formulários no React:
- * **Controlled**:
- * mantenho cada input do usuário em um estado do React (foi o que fizemos no projeto de Ignite Feed)
- * e faço isso para cada input que tem no formulário
- * benefícios = tenho facil acesso ao valor atual do input, consigo visualizar alterações mais facilmente
- * desvantagens = a cada modificação (setTask) o React re-renderiza o componente inteiro. Se a aplicação
- * tiver vários componentes e muita complexidade, isso pode virar um gargalo.
- * situações de uso => formulários pequenos, com poucos inputs
- * **Uncontrolled**:
- * utiliza os eventos do html para manipular o formulario via onSubmit com funções (como aquelas handle)
- * benefícios = não precisa de um estado para cada input, mais performático
- * desvantagens = não temos acesso ao valor atual do input, não conseguimos visualizar alterações facilmente (perde fluidez)
- * situações de uso => formulários grandes, com muitos inputs (dashboards de cadastro, com 200, 300 inputs)
- */
-
-/**
- * A register() é função que retorna várias funções;
- * function register (name: string) {
- *  return {
- *      onChange: () => void,
- *      onBlur: () => void,
- *      onFocus: () => void,
- * }
- * Quando colocamos {...register('task')} estamos passando todas as funções como propriedades do input
- * Ou seja, é a mesma coisa que eu colocar onChange, onBlur, onFocus manualmente e colocar uma função que faz alguma coisa
- * (coloquei função vazia ali no exemplo mas é apenas para ilustrar)
- */
-
-// o envio do formulario retorna um objeto, portanto começo com zod.object
-// esse é o objeto validador
-const newCycleFormValidationSchema = zod.object({
-  // digo que a chave task precisa ser string com minimo 1 caractere e se nao tiver, passe essa msg par usuario
-  task: zod.string().min(1, 'Informe a tarefa!'),
-  minutesAmount: zod
-    .number()
-    .min(5, 'Ciclo precisa ser de no mínimo 5 minutos!')
-    .max(60, 'Ciclo precisa ser de no máximo 60 minutos!'),
-})
-
-// aqui estou criando um tipo a partir do objeto acima. É uma função do zod.
-// além disso, veja que sempre que referencio variavel JS dentro do TS, preciso colocar "typeof" + nomeDaVariavel
-// essa função infer faz o zod meio que criar um type a partir do objeto validador que eu mandei
-type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
+import { NewCycleForm } from './components/NewCycleForm'
+import { Countdown } from './components/Countdown'
 
 interface Cycle {
   id: string
@@ -66,31 +19,16 @@ interface Cycle {
   minutesAmount: number
   startDate: Date
   interruptedDate?: Date
+  finishedDate?: Date
 }
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
   const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
 
   // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
-  useEffect(() => {
-    let interval: number
-    if (activeCycle) {
-      interval = setInterval(() => {
-        setAmountSecondsPassed(
-          differenceInSeconds(new Date(), activeCycle.startDate),
-          // diferença em segundos do tempo atual para o tempo em que o ciclo começou
-        )
-      }, 1000)
-    }
-
-    return () => {
-      clearInterval(interval)
-    }
-  }, [activeCycle])
 
   /*
    * useForm é um HOOK
@@ -101,15 +39,6 @@ export function Home() {
   /**
    * handleSubmit pega a minha função de submit handleCreateNewCycle e passa as info do input para ela processar
    */
-
-  // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
-  // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
-  // Fluxo: handleSubmit -> handleCreateNewCycle -> newCycleFormValidationSchema
-  // O tempo todo useForm está sendo usado e por isso preciso que ele tenha essa interface
-  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
-    resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
-    defaultValues: { task: '', minutesAmount: 0 },
-  })
 
   // watch é uma função que recebe o nome do input e retorna o valor atual dele, para observermos em tempo real
   // com ele, posso fazer ativação e desativação do botão começar, por exemplo
@@ -140,8 +69,8 @@ export function Home() {
 
   function handleInterruptCycle() {
     // esse código aqui é para setar informação de ciclo interrompido
-    setCycles(
-      cycles.map((cycle) => {
+    setCycles((state) =>
+      state.map((cycle) => {
         // percorre todos os ciclos
         if (cycle.id === activeCycleID) {
           // se achar o ciclo atual
@@ -158,7 +87,6 @@ export function Home() {
     setActiveCycleID(null) // reseta o ciclo ativo
   }
 
-  const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 // total em segundos do ciclo atual
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
 
   // Math.floor arredonda para baixo (pomodoro de 25 ao passar 1 s eu já posso exibir 24 no display)
@@ -179,51 +107,20 @@ export function Home() {
   console.log(cycles)
 
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
+  /*
+   * Prop drills: quando tenho que ficar elencando várias propriedades em componentes apenas para passar variaveis ou funções
+   ** para o componente-filho
+   * Para evitar isso, uso o Context API => ajuda a compartilhar informações entre vários componentes ao mesmo tempo
+   */
   return (
     <HomeContainer>
       <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
-        <FormContainer>
-          <label htmlFor="task">Vou trabalhar em</label>
-          <TaskInput
-            type="text"
-            id="task"
-            placeholder="Dê um nome ao seu projeto"
-            list="task-suggestions"
-            disabled={!!activeCycle} // se tiver ciclo ativo, desabilita o input
-            {...register('task')} // estamos setando qual o nome do meu input (por isso, não precisa colocar mais "name" no input)
-          />
-
-          <datalist id="task-suggestions">
-            <option value="Projeto 1" />
-            <option value="Projeto 2" />
-            <option value="Projeto 3" />
-            <option value="Projeto 4" />
-            <option value="Projeto 5" />
-          </datalist>
-
-          <label htmlFor="minutesAmount">durante</label>
-          <MinutesAmountInput
-            type="number"
-            id="minutesAmount"
-            placeholder="00"
-            step={5} // step é o intervalo entre os números que o input aceita
-            min={5} // valor mínimo que o input aceita
-            // max={60} // valor máximo que o input aceita
-            disabled={!!activeCycle}
-            {...register('minutesAmount', { valueAsNumber: true })}
-            // aqui passamos parâmetro para indicar que esse input será um número
-          />
-
-          <span>minutos.</span>
-        </FormContainer>
-        <CountdownContainer>
-          <span>{minutes[0]}</span>
-          <span>{minutes[1]}</span>
-          <Separator>:</Separator>
-          <span>{seconds[0]}</span>
-          <span>{seconds[1]}</span>
-        </CountdownContainer>
-
+        <NewCycleForm />
+        <Countdown
+          activeCycle={activeCycle}
+          setCycles={setCycles}
+          activeCycleID={activeCycleID}
+        />
         {activeCycle ? (
           <StopCountdownButton
             type="button" /* tipo button pq não quero fazer submit, só interromper mesmo */

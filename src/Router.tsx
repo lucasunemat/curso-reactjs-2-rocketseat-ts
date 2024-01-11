@@ -25,6 +25,10 @@ import { DefaultLayout } from './layouts/DefaultLayout/index.tsx'
  * Fluxo de informação: DefaultLayout => Router usa para definir como exibir => Pages
  */
 
+/**
+ * Por meio da informação de element="" o Route entende qual layout utilizar
+ */
+
 export function Router() {
   return (
     <Routes>
