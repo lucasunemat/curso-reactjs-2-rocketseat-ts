@@ -1,9 +1,9 @@
-// import { ThemeProvider } from 'styled-components' // para habilitar uso de temas precisa do ThemeProvider
-// import { defaultTheme } from './styles/themes/default' // aqui estou só importando o tema default
-// import { GlobalStyle } from './styles/global'
-// import { Router } from './Router'
-// import { BrowserRouter } from 'react-router-dom'
-import { Home } from './home'
+import { ThemeProvider } from 'styled-components' // para habilitar uso de temas precisa do ThemeProvider
+import { defaultTheme } from './styles/themes/default' // aqui estou só importando o tema default
+import { GlobalStyle } from './styles/global'
+import { Router } from './Router'
+import { BrowserRouter } from 'react-router-dom'
+// import { Home } from './home'
 
 /**
  * Aqui você coloca o ThemeProvider como tag e usa theme como
@@ -24,13 +24,13 @@ import { Home } from './home'
 
 export function App() {
   return (
-    <Home />
-    // <ThemeProvider theme={defaultTheme}>
-    //  <BrowserRouter>
-    //    <Router />
-    // </BrowserRouter>
+    // invocação do home-teste que usei para documentar explicação de context API<Home />
+    <ThemeProvider theme={defaultTheme}>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
 
-    // <GlobalStyle />
-    // </ThemeProvider>
+      <GlobalStyle />
+    </ThemeProvider>
   )
 }

@@ -1,17 +1,18 @@
+// isso era apenas uma explicação sobre contextos. Vou comentar tudo e deixar para consulta futura
+
+/*
 import { createContext, useContext, useState } from 'react'
 
-const CycleContext = createContext({
-  activeCycle: 1, // valor inicial
-})
+const CycleContext = createContext({} as any)
 
 export function Countdown() {
-  let { activeCycle } = useContext(CycleContext) // indicando que vou usar o contexto e pego uma var por destructuring
+  const { activeCycle, setActiveCycle } = useContext(CycleContext) // indicando que vou usar o contexto e pego uma var por destructuring
   return (
     <h1>
       Countdown: {activeCycle}
       <button
         onClick={() => {
-          activeCycle = 4
+          setActiveCycle(2)
         }}
       >
         Alterar
@@ -28,10 +29,10 @@ export function NewCycleForm() {
 export function Home() {
   // o estado precisa sempre ser colocado no componente mais por fora (componente pai), que
   // envolve os componentes que precisam usar o estado
-  // veja que uso destrucutring para pegar o valor até quando preciso colocar na prop "value" (dúvida: activeCycle é o activeCycle do useState?)
+  // o value recebe os valores que quero que o contexto disponibilize para os componentes
   const [activeCycle, setActiveCycle] = useState(0)
   return (
-    <CycleContext.Provider value={{ activeCycle }}>
+    <CycleContext.Provider value={{ activeCycle, setActiveCycle }}>
       <div>
         <Countdown />
         <NewCycleForm />
@@ -39,3 +40,4 @@ export function Home() {
     </CycleContext.Provider>
   )
 }
+*/

@@ -8,7 +8,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext } from 'react'
 import { differenceInSeconds } from 'date-fns'
 import { NewCycleForm } from './components/NewCycleForm'
 import { Countdown } from './components/Countdown'
@@ -21,6 +21,13 @@ interface Cycle {
   interruptedDate?: Date
   finishedDate?: Date
 }
+
+interface CyclesContextType {
+  activeCycle: Cycle | undefined
+  activeCycleID: string | null
+}
+
+export const CyclesContext = createContext({} as CyclesContextType) // uso o as para assinar a interface como molde
 
 export function Home() {
   const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
@@ -87,25 +94,6 @@ export function Home() {
     setActiveCycleID(null) // reseta o ciclo ativo
   }
 
-  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
-
-  // Math.floor arredonda para baixo (pomodoro de 25 ao passar 1 s eu já posso exibir 24 no display)
-  // around: de cinco pra cima, floor: para baixo, ceil: para cima
-  const minutesAmount = Math.floor(currentSeconds / 60)
-  const secondsAmount = currentSeconds % 60 // resto da divisão por 60, no caso de 25 minutos, é 0,8333 se passou 1 segundo
-
-  const minutes = String(minutesAmount).padStart(2, '0') // se tiver 1 minuto, exibe 01. Isso faz sempre eu ter dois caracteres. se tiver só 1 numero para exibir, preenche o começo com zero (por isso padSTART)
-  const seconds = String(secondsAmount).padStart(2, '0')
-  // console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando (tem que desestruturar o formState do useForm)
-
-  useEffect(() => {
-    if (activeCycle) {
-      document.title = `${minutes}:${seconds} - Pomodoro`
-    }
-  }, [minutes, seconds, activeCycle])
-
-  console.log(cycles)
-
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   /*
    * Prop drills: quando tenho que ficar elencando várias propriedades em componentes apenas para passar variaveis ou funções
@@ -115,12 +103,10 @@ export function Home() {
   return (
     <HomeContainer>
       <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
-        <NewCycleForm />
-        <Countdown
-          activeCycle={activeCycle}
-          setCycles={setCycles}
-          activeCycleID={activeCycleID}
-        />
+        <CyclesContext.Provider value={{ activeCycle }}>
+          <NewCycleForm />
+          <Countdown />
+        </CyclesContext.Provider>
         {activeCycle ? (
           <StopCountdownButton
             type="button" /* tipo button pq não quero fazer submit, só interromper mesmo */

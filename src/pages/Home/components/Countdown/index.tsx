@@ -1,20 +1,13 @@
 // componentes locais você joga na pasta components da página
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { CountdownContainer, Separator } from '../../styles'
 import { differenceInSeconds } from 'date-fns'
+import { CyclesContext } from '../..'
 
-interface CountdownProps {
-  activeCycle: any
-  setCycles: any
-  activeCycleID: any
-}
+export function Countdown() {
+  const { activeCycle, activeCycleID } = useContext(CyclesContext) // pego o ciclo ativo da context API criada lá na home.tsx
 
-export function Countdown({
-  activeCycle,
-  setCycles,
-  activeCycleID,
-}: CountdownProps) {
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 // total em segundos do ciclo atual
@@ -60,6 +53,25 @@ export function Countdown({
       clearInterval(interval)
     }
   }, [activeCycle, activeCycleID, cycles, totalSeconds])
+
+  const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
+
+  // Math.floor arredonda para baixo (pomodoro de 25 ao passar 1 s eu já posso exibir 24 no display)
+  // around: de cinco pra cima, floor: para baixo, ceil: para cima
+  const minutesAmount = Math.floor(currentSeconds / 60)
+  const secondsAmount = currentSeconds % 60 // resto da divisão por 60, no caso de 25 minutos, é 0,8333 se passou 1 segundo
+
+  const minutes = String(minutesAmount).padStart(2, '0') // se tiver 1 minuto, exibe 01. Isso faz sempre eu ter dois caracteres. se tiver só 1 numero para exibir, preenche o começo com zero (por isso padSTART)
+  const seconds = String(secondsAmount).padStart(2, '0')
+  // console.log(formState.errors) // aqui eu consigo ver os erros que o zod está retornando (tem que desestruturar o formState do useForm)
+
+  useEffect(() => {
+    if (activeCycle) {
+      document.title = `${minutes}:${seconds} - Pomodoro`
+    }
+  }, [minutes, seconds, activeCycle])
+
+  console.log(cycles)
 
   return (
     <CountdownContainer>
