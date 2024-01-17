@@ -111,6 +111,7 @@ export function CyclesContextProvider({
     setActiveCycleID(null) // reseta o ciclo ativo
   }
 
+  // children indica todo conteudo que está dentro do componente (elementos html)
   return (
     <CyclesContext.Provider
       value={{
