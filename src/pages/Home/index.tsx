@@ -40,7 +40,7 @@ export function Home() {
   })
 
   // essa var recebe as funções que o useForm retorna e eu lanço ela com spread operator la no FormProvider para o NewCycleForm usar o register que ele precisa
-  const { handleSubmit, watch /* reset */ } = newCycleForm
+  const { handleSubmit, watch, reset } = newCycleForm
 
   // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
 
@@ -70,9 +70,16 @@ export function Home() {
    ** para o componente-filho
    * Para evitar isso, uso o Context API => ajuda a compartilhar informações entre vários componentes ao mesmo tempo
    */
+
+  function handleCreateNewCycle(data: NewCycleFormData) {
+    createNewCycle(data)
+    reset()
+  }
+
+  // handle: prefixo para funções disparadas por eventos
   return (
     <HomeContainer>
-      <form action="" onSubmit={handleSubmit(createNewCycle)}>
+      <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
         <FormProvider {...newCycleForm}>
           <NewCycleForm />
         </FormProvider>

@@ -1,4 +1,8 @@
-// use essa técnica sempre que precisar do contexto para mais de uma rota (home, history...)
+/*
+ * Use essa técnica sempre que precisar do contexto para mais de uma rota (home, history...)
+ * Importante: contextos devem depender só de coisas do proprio react, ou de bibliotecas que
+ ** só usamos nele e não estão presentes no restante do código
+ */
 
 import { ReactNode, createContext, useState } from 'react'
 
