@@ -1,4 +1,6 @@
+import { useContext } from 'react'
 import { FormContainer, MinutesAmountInput, TaskInput } from '../../styles'
+import { CyclesContext } from '../..'
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
@@ -28,30 +30,12 @@ import { FormContainer, MinutesAmountInput, TaskInput } from '../../styles'
  * (coloquei função vazia ali no exemplo mas é apenas para ilustrar)
  */
 
-// o envio do formulario retorna um objeto, portanto começo com zod.object
-// esse é o objeto validador
-const newCycleFormValidationSchema = zod.object({
-  // digo que a chave task precisa ser string com minimo 1 caractere e se nao tiver, passe essa msg par usuario
-  task: zod.string().min(1, 'Informe a tarefa!'),
-  minutesAmount: zod
-    .number()
-    .min(1, 'Ciclo precisa ser de no mínimo 5 minutos!')
-    .max(60, 'Ciclo precisa ser de no máximo 60 minutos!'),
-})
-
-// aqui estou criando um tipo a partir do objeto acima. É uma função do zod.
-// além disso, veja que sempre que referencio variavel JS dentro do TS, preciso colocar "typeof" + nomeDaVariavel
-// essa função infer faz o zod meio que criar um type a partir do objeto validador que eu mandei
-type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 export function NewCycleForm() {
+  const { activeCycle } = useContext(CyclesContext)
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
   // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
   // Fluxo: handleSubmit -> handleCreateNewCycle -> newCycleFormValidationSchema
   // O tempo todo useForm está sendo usado e por isso preciso que ele tenha essa interface
-  const { register, handleSubmit, watch, reset } = useForm<NewCycleFormData>({
-    resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
-    defaultValues: { task: '', minutesAmount: 0 },
-  })
   return (
     <FormContainer>
       <label htmlFor="task">Vou trabalhar em</label>

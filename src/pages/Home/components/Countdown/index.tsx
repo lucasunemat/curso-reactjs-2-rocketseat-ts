@@ -6,7 +6,8 @@ import { differenceInSeconds } from 'date-fns'
 import { CyclesContext } from '../..'
 
 export function Countdown() {
-  const { activeCycle, activeCycleID } = useContext(CyclesContext) // pego o ciclo ativo da context API criada lá na home.tsx
+  const { activeCycle, activeCycleID, markCurrentCycleAsFinished } =
+    useContext(CyclesContext) // pego o ciclo ativo da context API criada lá na home.tsx
 
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
 
@@ -24,20 +25,7 @@ export function Countdown() {
 
         // tratamento para caso o ciclo já tenha terminado (diferença em segundos superou o total de segundos do ciclo)
         if (secondsDiffernce >= totalSeconds) {
-          setCycles((state) =>
-            state.map((cycle) => {
-              // percorre todos os ciclos
-              if (cycle.id === activeCycleID) {
-                // se achar o ciclo atual
-                return {
-                  ...cycle,
-                  finishedDate: new Date(), // retorna ele + info de finalizado (update)
-                }
-              } else {
-                return cycle // se não achar, só retorna o ciclo, não faz nada
-              }
-            }),
-          )
+          markCurrentCycleAsFinished() // marca o ciclo atual como finalizado
 
           setAmountSecondsPassed(totalSeconds) // seta a quantidade de segundos passados como o total de segundos do ciclo
           clearInterval(interval) // limpa o intervalo para que ele não continue rodando (e não continue atualizando o contador de segundos
@@ -52,7 +40,7 @@ export function Countdown() {
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle, activeCycleID, cycles, totalSeconds])
+  }, [activeCycle, activeCycleID, totalSeconds, markCurrentCycleAsFinished])
 
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
 
@@ -70,8 +58,6 @@ export function Countdown() {
       document.title = `${minutes}:${seconds} - Pomodoro`
     }
   }, [minutes, seconds, activeCycle])
-
-  console.log(cycles)
 
   return (
     <CountdownContainer>
