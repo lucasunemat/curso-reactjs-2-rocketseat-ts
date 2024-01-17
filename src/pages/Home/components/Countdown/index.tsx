@@ -1,15 +1,18 @@
 // componentes locais você joga na pasta components da página
 
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect /* useState */ } from 'react'
 import { CountdownContainer, Separator } from '../../styles'
 import { differenceInSeconds } from 'date-fns'
-import { CyclesContext } from '../..'
+import { CyclesContext } from '../../../../contexts/CyclesContext'
 
 export function Countdown() {
-  const { activeCycle, activeCycleID, markCurrentCycleAsFinished } =
-    useContext(CyclesContext) // pego o ciclo ativo da context API criada lá na home.tsx
-
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
+  const {
+    activeCycle,
+    activeCycleID,
+    markCurrentCycleAsFinished,
+    amountSecondsPassed,
+    setSecondsPassed,
+  } = useContext(CyclesContext) // pego o ciclo ativo da context API criada lá na home.tsx
 
   const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0 // total em segundos do ciclo atual
 
@@ -27,10 +30,10 @@ export function Countdown() {
         if (secondsDiffernce >= totalSeconds) {
           markCurrentCycleAsFinished() // marca o ciclo atual como finalizado
 
-          setAmountSecondsPassed(totalSeconds) // seta a quantidade de segundos passados como o total de segundos do ciclo
+          setSecondsPassed(totalSeconds) // seta a quantidade de segundos passados como o total de segundos do ciclo
           clearInterval(interval) // limpa o intervalo para que ele não continue rodando (e não continue atualizando o contador de segundos
         } else {
-          setAmountSecondsPassed(secondsDiffernce)
+          setSecondsPassed(secondsDiffernce)
           // se não tiver acabo o ciclo, seta a diferença em segundos do tempo atual para o tempo em que o ciclo começou
           // isso vai fazer o contador ir atualizando
         }
@@ -40,7 +43,13 @@ export function Countdown() {
     return () => {
       clearInterval(interval)
     }
-  }, [activeCycle, activeCycleID, totalSeconds, markCurrentCycleAsFinished])
+  }, [
+    activeCycle,
+    activeCycleID,
+    totalSeconds,
+    markCurrentCycleAsFinished,
+    setSecondsPassed,
+  ])
 
   const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0 // essa currentSeconds que exibo em tela
 

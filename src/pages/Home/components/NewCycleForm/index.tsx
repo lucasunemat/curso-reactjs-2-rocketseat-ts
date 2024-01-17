@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { FormContainer, MinutesAmountInput, TaskInput } from '../../styles'
-import { CyclesContext } from '../..'
+import { useFormContext } from 'react-hook-form'
+import { CyclesContext } from '../../../../contexts/CyclesContext'
 /**
  * Duas formas principais de lidar com formulários no React:
  * **Controlled**:
@@ -32,6 +33,8 @@ import { CyclesContext } from '../..'
 
 export function NewCycleForm() {
   const { activeCycle } = useContext(CyclesContext)
+  // tô usando API de contexto da biblioteca react-hook-form. Só funciona se tiver o FormProvider ao redor do componente lá no index.tsx
+  const { register } = useFormContext()
   // estamos desestruturando e pegando funções que são retornadas pelo useForm. Funções: register, handleSubmit
   // preciso passar interface NewCycleFormData para o useForm saber o tipo de dado que ele vai receber
   // Fluxo: handleSubmit -> handleCreateNewCycle -> newCycleFormValidationSchema

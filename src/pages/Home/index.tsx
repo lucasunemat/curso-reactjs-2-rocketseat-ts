@@ -8,27 +8,11 @@ import {
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as zod from 'zod' // uso essa sintaxa porque, se clicares no 'zod' com ctrl, veras que ele não tem export default
-import { useState, /* useEffect */ createContext } from 'react'
+import { /* useEffect */ useContext } from 'react'
 // import { differenceInSeconds } from 'date-fns'
 import { NewCycleForm } from './components/NewCycleForm'
 import { Countdown } from './components/Countdown'
-
-interface Cycle {
-  id: string
-  task: string
-  minutesAmount: number
-  startDate: Date
-  interruptedDate?: Date
-  finishedDate?: Date
-}
-
-interface CyclesContextType {
-  activeCycle: Cycle | undefined
-  activeCycleID: string | null
-  markCurrentCycleAsFinished: () => void // função que marca o ciclo atual como finalizado, criei ela para facilitar compatilhamento na API
-}
-
-export const CyclesContext = createContext({} as CyclesContextType) // uso o as para assinar a interface como molde
+import { CyclesContext } from '../../contexts/CyclesContext'
 
 // o envio do formulario retorna um objeto, portanto começo com zod.object
 // esse é o objeto validador
@@ -47,8 +31,8 @@ const newCycleFormValidationSchema = zod.object({
 type NewCycleFormData = zod.infer<typeof newCycleFormValidationSchema>
 
 export function Home() {
-  const [cycles, setCycles] = useState<Cycle[]>([]) // esse estado sempre terá o array de ciclos mais atual em "cycles"
-  const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
+  const { activeCycle, createNewCycle, interruptCurrentCycle } =
+    useContext(CyclesContext)
 
   const newCycleForm = useForm<NewCycleFormData>({
     resolver: zodResolver(newCycleFormValidationSchema), // passo a função validadora dentro do zodResolver
@@ -56,27 +40,7 @@ export function Home() {
   })
 
   // essa var recebe as funções que o useForm retorna e eu lanço ela com spread operator la no FormProvider para o NewCycleForm usar o register que ele precisa
-  const { handleSubmit, watch, reset } = newCycleForm
-
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID)
-
-  function markCurrentCycleAsFinished() {
-    // defini ela aqui porque essa função usa o setCycles que só existe dentro do meu componente Home
-    setCycles((state) =>
-      state.map((cycle) => {
-        // percorre todos os ciclos
-        if (cycle.id === activeCycleID) {
-          // se achar o ciclo atual
-          return {
-            ...cycle,
-            finishedDate: new Date(), // retorna ele + info de finalizado (update)
-          }
-        } else {
-          return cycle // se não achar, só retorna o ciclo, não faz nada
-        }
-      }),
-    )
-  }
+  const { handleSubmit, watch /* reset */ } = newCycleForm
 
   // obs: sempre que eu uso uma variavel externa no useEffect, preciso colocar ela no array de dependencias
 
@@ -100,45 +64,6 @@ export function Home() {
   // variavel auxiliar para melhorar legibilidade do código
   const isSubmitDisabled = !task
 
-  function handleCreateNewCycle(data: NewCycleFormData) {
-    const id = new Date().getTime().toString()
-
-    const newCycle: Cycle = {
-      id, // criando id a partir do tempo atual
-      task: data.task,
-      minutesAmount: data.minutesAmount,
-      startDate: new Date(),
-    }
-
-    setCycles((state) => [...state, newCycle]) // adicionando novo ciclo ao array de ciclos
-
-    setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
-
-    setAmountSecondsPassed(0) // resetando o contador de segundos para que ele nao considere esses segundos passados em proximos ciclos
-
-    reset() // resetando o formulário usando função devolvida por useForm. Ele reseta para os valores defaultValues
-  }
-
-  function handleInterruptCycle() {
-    // esse código aqui é para setar informação de ciclo interrompido
-    setCycles((state) =>
-      state.map((cycle) => {
-        // percorre todos os ciclos
-        if (cycle.id === activeCycleID) {
-          // se achar o ciclo atual
-          return {
-            ...cycle,
-            interruptedDate: new Date(), // retorna ele + info de interrompido (update)
-          }
-        } else {
-          return cycle // se não achar, só retorna o ciclo, não faz nada
-        }
-      }),
-    )
-
-    setActiveCycleID(null) // reseta o ciclo ativo
-  }
-
   // o handleSubmit recebe como parâmetro uma função minha que vai ser executada quando o usuário der submit no formulário
   /*
    * Prop drills: quando tenho que ficar elencando várias propriedades em componentes apenas para passar variaveis ou funções
@@ -147,19 +72,15 @@ export function Home() {
    */
   return (
     <HomeContainer>
-      <form action="" onSubmit={handleSubmit(handleCreateNewCycle)}>
-        <CyclesContext.Provider
-          value={{ activeCycle, activeCycleID, markCurrentCycleAsFinished }}
-        >
-          <FormProvider {...newCycleForm}>
-            <NewCycleForm />
-          </FormProvider>
-          <Countdown />
-        </CyclesContext.Provider>
+      <form action="" onSubmit={handleSubmit(createNewCycle)}>
+        <FormProvider {...newCycleForm}>
+          <NewCycleForm />
+        </FormProvider>
+        <Countdown />
         {activeCycle ? (
           <StopCountdownButton
             type="button" /* tipo button pq não quero fazer submit, só interromper mesmo */
-            onClick={handleInterruptCycle}
+            onClick={interruptCurrentCycle}
           >
             <HandPalm size={24} />
             Interromper

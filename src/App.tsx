@@ -3,6 +3,7 @@ import { defaultTheme } from './styles/themes/default' // aqui estou só importa
 import { GlobalStyle } from './styles/global'
 import { Router } from './Router'
 import { BrowserRouter } from 'react-router-dom'
+import { CyclesContextProvider } from './contexts/CyclesContext'
 // import { Home } from './home'
 
 /**
@@ -27,10 +28,24 @@ export function App() {
     // invocação do home-teste que usei para documentar explicação de context API<Home />
     <ThemeProvider theme={defaultTheme}>
       <BrowserRouter>
-        <Router />
+        <CyclesContextProvider>
+          <Router />
+        </CyclesContextProvider>
       </BrowserRouter>
 
       <GlobalStyle />
     </ThemeProvider>
   )
 }
+
+/**
+ *         <CyclesContext.Provider
+          value={{
+            activeCycle,
+            activeCycleID,
+            markCurrentCycleAsFinished,
+            amountSecondsPassed,
+            setSecondsPassed,
+          }}
+        >
+ */
