@@ -55,7 +55,9 @@ export function CyclesContextProvider({
    */
   const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
     if (action.type === 'ADD_NEW_CYCLE') {
-      return [...state, action.payload.newCycle] // retorna o estado atual + o novo ciclo (mesma regra que eu acionava com setCycles (state => [...state, newCycle]))
+      // retorna o estado atual + o novo ciclo (mesma regra que eu acionava com setCycles (state => [...state, newCycle]))
+      // esse return é o novo valor que queremos que o estado tenha
+      return [...state, action.payload.newCycle]
     }
 
     return state
