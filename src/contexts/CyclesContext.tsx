@@ -41,6 +41,11 @@ interface CyclesContextProviderProps {
   children: ReactNode // reactNode é qualquer coisa que o react aceita como conteúdo de tela (componentes html válidos, div, h1, etc)
 }
 
+interface CycleState {
+  cycles: Cycle[]
+  activeCycleID: string | null
+}
+
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
@@ -53,18 +58,42 @@ export function CyclesContextProvider({
    * disparar minha ação dentro do reducer
    * Renomeei para dispatch (antigo setCycles)
    */
-  const [cycles, dispatch] = useReducer((state: Cycle[], action: any) => {
-    if (action.type === 'ADD_NEW_CYCLE') {
-      // retorna o estado atual + o novo ciclo (mesma regra que eu acionava com setCycles (state => [...state, newCycle]))
-      // esse return é o novo valor que queremos que o estado tenha
-      return [...state, action.payload.newCycle]
-    }
+  const [cyclesState, dispatch] = useReducer(
+    (state: CycleState, action: any) => {
+      if (action.type === 'ADD_NEW_CYCLE') {
+        // retorna o estado atual + o novo ciclo (mesma regra que eu acionava com setCycles (state => [...state, newCycle]))
+        // esse return é o novo valor que queremos que o estado tenha
+        return {
+          ...state,
+          cycles: [...state.cycles, action.payload.newCycle], // retorna os ciclos, mas adiciona o novo ciclo no final
+          activeCycleID: action.payload.newCycle.id, // ativa o ciclo recem criado colocando o id dele como atual
+        }
+      }
 
-    return state
-  }, [])
+      if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
+        return {
+          ...state,
+          cycles: state.cycles.map((cycle) => {
+            if (cycle.id === state.activeCycleID) {
+              return { ...cycle, interruptedDate: new Date() }
+            } else {
+              return cycle
+            }
+          }),
+          activeCycleID: null,
+        }
+      }
 
-  const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
+      return state // se não for a ação que eu quero, retorna o estado atual
+    },
+    { cycles: [], activeCycleID: null },
+  )
+
+  // desde que colocou o reducer, não preciso mais do estado abaixo
+  // const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
+
+  const { cycles, activeCycleID } = cyclesState // desestruturando o estado para pegar os valores que quero
 
   const activeCycle = cycles.find((cycle) => cycle.id === activeCycleID) // encontra o ciclo ativo
 
@@ -116,7 +145,8 @@ export function CyclesContextProvider({
       },
     }) // disparando ação para o reducer
 
-    setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
+    // não precisa mais da linha abaixo porque o reducer já faz isso
+    // setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
 
     setAmountSecondsPassed(0) // resetando o contador de segundos para que ele nao considere esses segundos passados em proximos ciclos
 
@@ -150,7 +180,7 @@ export function CyclesContextProvider({
     //   }),
     // )
 
-    setActiveCycleID(null) // reseta o ciclo ativo
+    // setActiveCycleID(null) // reseta o ciclo ativo
   }
 
   // children indica todo conteudo que está dentro do componente (elementos html)
