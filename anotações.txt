@@ -48,3 +48,8 @@ CONFIGURAÇÃO DE BIBLIOTECA DE VALIDAÇÃO ZOD
 * npm i zod
 * npm i @hookform/resolvers = para permitir integração da react-
   hook-form com a zod
+
+INSTALANDO IMMER
+
+* Immer é uma biblioteca para trabalhar com imutabilidade
+* comando: npm i immer
