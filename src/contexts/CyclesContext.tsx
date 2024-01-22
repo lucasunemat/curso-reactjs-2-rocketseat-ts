@@ -4,7 +4,13 @@
  ** só usamos nele e não estão presentes no restante do código
  */
 
-import { ReactNode, createContext, useReducer, useState } from 'react'
+import {
+  ReactNode,
+  createContext,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react'
 import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
 import {
   addNewCycleAction,
@@ -52,14 +58,41 @@ export function CyclesContextProvider({
    */
 
   // cyclesReducer tem toda a regra de negócio para manipular os ciclos
-  const [cyclesState, dispatch] = useReducer(cyclesReducer, {
-    cycles: [],
-    activeCycleID: null,
-  })
+  const [cyclesState, dispatch] = useReducer(
+    cyclesReducer,
+    {
+      cycles: [],
+      activeCycleID: null,
+    },
+    // essa função é um parametro do reducer que carrega info assim que a pagina é carregada pela primeira vez
+    (initialState) => {
+      // initialState é o valor inicial do estado , { cycles: [], activeCycleID: null}
+      const storedStateAsJSON = localStorage.getItem(
+        '@ignite-timer:cycles-state-1.0.0',
+      )
+
+      // se tiver algo no localStorage, retorna o valor em JSON
+      if (storedStateAsJSON) {
+        return JSON.parse(storedStateAsJSON)
+      }
+
+      return initialState // se não tiver nada no localStorage, retorna o valor inicial do estado
+    },
+  )
 
   // desde que colocou o reducer, não preciso mais do estado abaixo
   // const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
   const [amountSecondsPassed, setAmountSecondsPassed] = useState(0) // quantidade de segundos que passaram desde que o ciclo começou
+
+  useEffect(() => {
+    // isso é para salvar dados no localStorage (cachê do navegador) toda vez que o estado de cycles mudar
+    // todas as aplicações em um navegador compartilham o mesmo localStorage
+    // a parte de versionamento facilita sinalizar info inutil em formatos mais antigos e carrega só os novos
+    // esse local só armazena textos (JSON, no caso)
+    const stateJSON = JSON.stringify(cyclesState)
+
+    localStorage.setItem('@ignite-timer:cycles-state-1.0.0', stateJSON)
+  }, [cyclesState])
 
   const { cycles, activeCycleID } = cyclesState // desestruturando o estado para pegar os valores que quero
 

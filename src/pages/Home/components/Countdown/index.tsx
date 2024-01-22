@@ -23,7 +23,7 @@ export function Countdown() {
         // guardo diferença em segundos numa constante
         const secondsDiffernce = differenceInSeconds(
           new Date(),
-          activeCycle.startDate,
+          new Date(activeCycle.startDate),
         )
 
         // tratamento para caso o ciclo já tenha terminado (diferença em segundos superou o total de segundos do ciclo)
