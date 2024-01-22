@@ -5,15 +5,7 @@
  */
 
 import { ReactNode, createContext, useReducer, useState } from 'react'
-
-interface Cycle {
-  id: string
-  task: string
-  minutesAmount: number
-  startDate: Date
-  interruptedDate?: Date
-  finishedDate?: Date
-}
+import { ActionTypes, Cycle, cyclesReducer } from '../reducers/cycles'
 
 // não to reaproveitando a tipagem do zod porque meu contexto não pode depender de biblioteca externa
 interface createCycleData {
@@ -41,11 +33,6 @@ interface CyclesContextProviderProps {
   children: ReactNode // reactNode é qualquer coisa que o react aceita como conteúdo de tela (componentes html válidos, div, h1, etc)
 }
 
-interface CycleState {
-  cycles: Cycle[]
-  activeCycleID: string | null
-}
-
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
@@ -58,62 +45,10 @@ export function CyclesContextProvider({
    * disparar minha ação dentro do reducer
    * Renomeei para dispatch (antigo setCycles)
    */
-  const [cyclesState, dispatch] = useReducer(
-    (state: CycleState, action: any) => {
-      switch (action.type) {
-        case 'ADD_NEW_CYCLE':
-          // retorna o estado atual + o novo ciclo (mesma regra que eu acionava com setCycles (state => [...state, newCycle]))
-          // esse return é o novo valor que queremos que o estado tenha
-          return {
-            ...state,
-            cycles: [...state.cycles, action.payload.newCycle], // retorna os ciclos, mas adiciona o novo ciclo no final
-            activeCycleID: action.payload.newCycle.id, // ativa o ciclo recem criado colocando o id dele como atual
-          }
-        case 'INTERRUPT_CURRENT_CYCLE':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              if (cycle.id === state.activeCycleID) {
-                return { ...cycle, interruptedDate: new Date() }
-              } else {
-                return cycle
-              }
-            }),
-            activeCycleID: null,
-          }
-
-        case 'MARK_CURRENT_CYCLE_AS_FINISHED':
-          return {
-            ...state,
-            cycles: state.cycles.map((cycle) => {
-              if (cycle.id === state.activeCycleID) {
-                return { ...cycle, finishedDate: new Date() }
-              } else {
-                return cycle
-              }
-            }),
-            activeCycleID: null,
-          }
-
-        default:
-          return state
-      }
-
-      // if (action.type === 'ADD_NEW_CYCLE') {
-      // }
-
-      // if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
-
-      // }
-
-      // if (action.type === 'MARK_CURRENT_CYCLE_AS_FINISHED') {
-
-      // }
-
-      return state // se não for a ação que eu quero, retorna o estado atual
-    },
-    { cycles: [], activeCycleID: null },
-  )
+  const [cyclesState, dispatch] = useReducer(cyclesReducer, {
+    cycles: [],
+    activeCycleID: null,
+  })
 
   // desde que colocou o reducer, não preciso mais do estado abaixo
   // const [activeCycleID, setActiveCycleID] = useState<string | null>(null) // null porque no início não tem ciclo ativo. Esse estado anota o id do ciclo ativo
@@ -130,7 +65,7 @@ export function CyclesContextProvider({
   function markCurrentCycleAsFinished() {
     // defini ela aqui porque essa função usa o setCycles que só existe dentro do meu componente Home
     dispatch({
-      type: 'MARK_CURRENT_CYCLE_AS_FINISHED',
+      type: ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED,
       payload: {
         activeCycleID,
       },
@@ -165,7 +100,7 @@ export function CyclesContextProvider({
     // veja agora que preciso passar o tipo de ação (add new cycle) e depois, em payload, a var
     // com dados que quero adicionar
     dispatch({
-      type: 'ADD_NEW_CYCLE',
+      type: ActionTypes.ADD_NEW_CYCLE,
       payload: {
         newCycle,
       },
@@ -184,7 +119,7 @@ export function CyclesContextProvider({
     // o valor jogado dentro do dispatch() vai ir no lugar da "action" do reduce e vai disparar a função dele
     // aqui no caso eu jogo a var que quero manipular lá na função do reducer
     dispatch({
-      type: 'INTERRUPT_CURRENT_CYCLE',
+      type: ActionTypes.INTERRUPT_CURRENT_CYCLE,
       payload: {
         activeCycleID,
       },
