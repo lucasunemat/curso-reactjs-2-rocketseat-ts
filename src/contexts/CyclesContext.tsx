@@ -5,7 +5,12 @@
  */
 
 import { ReactNode, createContext, useReducer, useState } from 'react'
-import { ActionTypes, Cycle, cyclesReducer } from '../reducers/cycles'
+import { Cycle, cyclesReducer } from '../reducers/cycles/reducer'
+import {
+  addNewCycleAction,
+  interruptCurrentCycleAction,
+  markCurrentCycleAsFinishedAction,
+} from '../reducers/cycles/actions'
 
 // não to reaproveitando a tipagem do zod porque meu contexto não pode depender de biblioteca externa
 interface createCycleData {
@@ -45,6 +50,8 @@ export function CyclesContextProvider({
    * disparar minha ação dentro do reducer
    * Renomeei para dispatch (antigo setCycles)
    */
+
+  // cyclesReducer tem toda a regra de negócio para manipular os ciclos
   const [cyclesState, dispatch] = useReducer(cyclesReducer, {
     cycles: [],
     activeCycleID: null,
@@ -63,27 +70,8 @@ export function CyclesContextProvider({
   }
 
   function markCurrentCycleAsFinished() {
-    // defini ela aqui porque essa função usa o setCycles que só existe dentro do meu componente Home
-    dispatch({
-      type: ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED,
-      payload: {
-        activeCycleID,
-      },
-    })
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     // percorre todos os ciclos
-    //     if (cycle.id === activeCycleID) {
-    //       // se achar o ciclo atual
-    //       return {
-    //         ...cycle,
-    //         finishedDate: new Date(), // retorna ele + info de finalizado (update)
-    //       }
-    //     } else {
-    //       return cycle // se não achar, só retorna o ciclo, não faz nada
-    //     }
-    //   }),
-    // )
+    // define ela aqui porque essa função usa o setCycles que só existe dentro do meu componente Home
+    dispatch(markCurrentCycleAsFinishedAction()) // disparando ação para o reducer
   }
 
   function createNewCycle(data: createCycleData) {
@@ -99,12 +87,7 @@ export function CyclesContextProvider({
     // setCycles((state) => [...state, newCycle]) // adicionando novo ciclo ao array de ciclos
     // veja agora que preciso passar o tipo de ação (add new cycle) e depois, em payload, a var
     // com dados que quero adicionar
-    dispatch({
-      type: ActionTypes.ADD_NEW_CYCLE,
-      payload: {
-        newCycle,
-      },
-    }) // disparando ação para o reducer
+    dispatch(addNewCycleAction(newCycle)) // disparando ação para o reducer
 
     // não precisa mais da linha abaixo porque o reducer já faz isso
     // setActiveCycleID(id) // ativando o ciclo recem criado como ciclo atual
@@ -118,30 +101,7 @@ export function CyclesContextProvider({
     // esse código aqui é para setar informação de ciclo interrompido
     // o valor jogado dentro do dispatch() vai ir no lugar da "action" do reduce e vai disparar a função dele
     // aqui no caso eu jogo a var que quero manipular lá na função do reducer
-    dispatch({
-      type: ActionTypes.INTERRUPT_CURRENT_CYCLE,
-      payload: {
-        activeCycleID,
-      },
-    })
-
-    // disparando ação para o reducer
-    // setCycles((state) =>
-    //   state.map((cycle) => {
-    //     // percorre todos os ciclos
-    //     if (cycle.id === activeCycleID) {
-    //       // se achar o ciclo atual
-    //       return {
-    //         ...cycle,
-    //         interruptedDate: new Date(), // retorna ele + info de interrompido (update)
-    //       }
-    //     } else {
-    //       return cycle // se não achar, só retorna o ciclo, não faz nada
-    //     }
-    //   }),
-    // )
-
-    // setActiveCycleID(null) // reseta o ciclo ativo
+    dispatch(interruptCurrentCycleAction())
   }
 
   // children indica todo conteudo que está dentro do componente (elementos html)
