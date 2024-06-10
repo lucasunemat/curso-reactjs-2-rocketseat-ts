@@ -27,7 +27,7 @@ export function App() {
   return (
     // invocação do home-teste que usei para documentar explicação de context API<Home />
     <ThemeProvider theme={defaultTheme}>
-      <BrowserRouter basename="/igniteTimer">
+      <BrowserRouter basename="/igniteTimerLucasNBat">
         <CyclesContextProvider>
           <Router />
         </CyclesContextProvider>
